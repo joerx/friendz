@@ -108,4 +108,20 @@ describe('Story 5: blocklist API', () => {
         });
     });
 
+    it('should respond 409 if already blocked', done => {
+        const body = {
+            'requestor': 'andy@example.com',
+            'target': 'john@example.com'
+        };
+        api.post('/block', {body}, (err, res) => {
+            if (err) return done(err);
+            api.post('/block', {body},(err, res) => {
+                if (err) return done(err);
+                expect(res.statusCode).to.equal(409);
+                expect(res.body.error).to.match(/already blocked/i);
+                done();
+            });
+        });
+    });
+
 });
