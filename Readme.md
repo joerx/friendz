@@ -4,6 +4,13 @@
 
 - NodeJS 6.x
 
+## Running
+
+- Recommended to use docker-compose
+- Start the server: `docker-compose up`
+- API will listen on port 3000 by default
+
 ## Tests
 
-Run `npm test`
+- Standalone: `npm test`
+- Via docker: `docker-compose run app test`   

@@ -4,7 +4,8 @@
   "description": "Singapore Power Coding Challenge",
   "main": "index.js",
   "scripts": {
-    "test": "mocha spec/*-spec.js"
+    "test": "mocha spec/*-spec.js",
+    "server": "node ./server.js"
   },
   "author": "Joerg Henning <joerg@yodo.io>",
   "license": "ISC",
