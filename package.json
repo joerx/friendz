@@ -4,20 +4,26 @@
   "description": "Singapore Power Coding Challenge",
   "main": "index.js",
   "scripts": {
-    "test": "mocha spec/*-spec.js",
+    "test": "knex migrate:latest && mocha spec/*-spec.js",
+    "watch": "knex migrate:latest && mocha --watch spec/*-spec.js",
     "server": "node ./server.js",
-    "start": "node server.js"
+    "start": "node server.js",
+    "migrate": "knex migrate:latest"
   },
   "author": "Joerg Henning <joerg@yodo.io>",
   "license": "BSD-2-Clause",
   "dependencies": {
     "body-parser": "^1.17.1",
     "express": "^4.15.2",
-    "http-errors": "^1.6.1"
+    "http-errors": "^1.6.1",
+    "knex": "^0.13.0",
+    "mysql2": "^1.2.0",
+    "uuid": "^3.0.1"
   },
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^3.3.0",
+    "pg": "^6.1.5",
     "request": "^2.81.0"
   },
   "repository": {

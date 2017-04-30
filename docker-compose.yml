@@ -7,8 +7,19 @@ services:
     environment:
       PORT: 3000
       NODE_ENV: development
+      PG_URL: 'tcp://friends:friends@postgres/friends'
     volumes:
       - ./:/src
     ports:
       - '3000:3000'
+    links:
+      - postgres
+    depends_on:
+      - postgres
     command: run server
+  postgres:
+    image: postgres:9.6-alpine
+    environment:
+      POSTGRES_DB: friends
+      POSTGRES_PASSWORD: friends
+      POSTGRES_USER: friends

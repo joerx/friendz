@@ -3,17 +3,30 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const error = require('http-errors');
-const assert = require('assert');
+const knex = require('knex');
+const uuid = require('uuid');
+const config = require('./configure');
 
-// Ensure NODE_ENV is set explicitly
-assert(process.env.NODE_ENV, 'NODE_ENV must be set');
+const db = knex(config.knex);
 
 const app = module.exports = express();
 
 app.use(bodyParser.json());
 
-app.post('/connect', (req, res, next) => {
-    next(error.NotImplemented());
+app.post('/friends', (req, res, next) => {
+    // insert users, make them be friends
+    const friends = req.body.friends;
+
+    Promise
+        .all(friends.map(f => 
+            db('friends').insert({id: uuid(), email: f})
+        ))
+        .then(result => {
+            res.status(200).json({success: true});
+        })
+        .catch(err => {
+            next(err);
+        });
 });
 
 // 404 handler. We want a JSON response, so override express' default which renders HTML.
