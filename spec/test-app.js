@@ -6,10 +6,10 @@ const http = require('http');
 const db = require('../lib/db');
 
 // drop all tables so we have a clean db
-const cleanup = (db) => {
+const cleanup = (conn) => {
     const tables = ['friends'];
     return Promise.all(tables.map(
-        (t) => db.schema.hasTable(t).then(exists => exists ? db.truncate(t) : null)
+        (t) => conn.schema.hasTable(t).then(exists => exists ? conn.truncate(t) : null)
     ));
 }
 
@@ -29,7 +29,7 @@ const testApp = module.exports = (app) => {
     // extend the defaulted request object with a start method to use in `before` hooks, etc.
     return Object.assign(agent, {
         start: done => {
-            cleanup(db.instance())
+            cleanup(db())
                 .then(() => {
                     server = app.listen(port, done)
                 })

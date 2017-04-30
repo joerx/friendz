@@ -14,3 +14,7 @@
 
 - Standalone: `npm test`
 - Via docker: `docker-compose run app test`   
+
+## Migrations
+
+- Create migration: `docker-compose run app run migrate:make create_friendships`

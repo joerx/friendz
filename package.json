@@ -8,7 +8,8 @@
     "watch": "knex migrate:latest && mocha --watch spec/*-spec.js",
     "server": "node ./server.js",
     "start": "node server.js",
-    "migrate": "knex migrate:latest"
+    "migrate": "knex migrate:latest",
+    "migrate:make": "knex migrate:make $*"
   },
   "author": "Joerg Henning <joerg@yodo.io>",
   "license": "BSD-2-Clause",

@@ -59,7 +59,7 @@ describe('Story 1: friends API', () => {
         });
     });
 
-    it('should allow to add the same address twice', done => {
+    it('should allow to add the same address with different friends', done => {
         const firstBody = {
             friends:
             [
@@ -80,6 +80,33 @@ describe('Story 1: friends API', () => {
             api.post('/friends', {body: secondBody}, (err, res, body) => {
                 if (err) return done(err);
                 expect(res.statusCode).to.equal(200);
+                done();
+            });
+        });
+    });
+
+    it('should respond 409 when the same users are connected already', done => {
+        const firstBody = {
+            friends:
+            [
+              'andy@example.com',
+              'john@example.com'
+            ]
+        };
+        const secondBody = {
+            friends:
+            [
+              'andy@example.com',
+              'john@example.com'
+            ]
+        }
+
+        api.post('/friends', {body: firstBody}, (err, res, body) => {
+            if (err) return done(err);
+            api.post('/friends', {body: secondBody}, (err, res, body) => {
+                if (err) return done(err);
+                expect(res.statusCode).to.equal(409); // conflict
+                expect(body.error).to.match(/already connected/i);
                 done();
             });
         });
