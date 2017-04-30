@@ -7,7 +7,7 @@ const db = require('../lib/db');
 
 // drop all tables so we have a clean db
 const cleanup = (conn) => {
-    const tables = ['friends'];
+    const tables = ['friends', 'friendships'];
     return Promise.all(tables.map(
         (t) => conn.schema.hasTable(t).then(exists => exists ? conn.truncate(t) : null)
     ));

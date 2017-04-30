@@ -40,6 +40,20 @@ app.post('/friends/list', (req, res, next) => {
         .catch(err => next(err));
 });
 
+app.post('/friends/common', (req, res, next) => {
+    const emails = req.body.friends;
+
+    friends.findCommon(emails)
+        .then(friends => {
+            res.status(200).json({
+                success: true,
+                friends: friends.map(f => f.email),
+                count: friends.length
+            });
+        })
+        .catch(err => next(err));
+});
+
 // 404 handler. We want a JSON response, so override express' default which renders HTML.
 app.use((req, res, next) => {
     next(error.NotFound());
