@@ -27,6 +27,7 @@ describe('Story 4: subscription API', () => {
         });
     });
 
+
     it('should respond 404 if target does not exist', done => {
         const body = {
             'requestor': 'lisa@example.com',
@@ -40,6 +41,7 @@ describe('Story 4: subscription API', () => {
         });
     });
 
+
     it('should respond 400 if target is missing', done => {
         const body = {
             'requestor': 'lisa@example.com'
@@ -52,9 +54,10 @@ describe('Story 4: subscription API', () => {
         });
     });
 
+
     it('should respond 400 if requestor is missing', done => {
         const body = {
-            'target': 'hans@example.com'
+            'target': 'hans@example.constom'
         };
         api.post('/subscriptions', {body}, (err, res, body) => {
             if (err) return done(err);
@@ -63,6 +66,7 @@ describe('Story 4: subscription API', () => {
             done();
         });
     });
+
 
     it('should respond 200 on success', done => {
         const body = {
@@ -76,4 +80,22 @@ describe('Story 4: subscription API', () => {
             done();
         });
     });
+
+
+    it('should respond 409 if already subscribed', done => {
+        const body = {
+            'requestor': 'lisa@example.com',
+            'target': 'john@example.com'
+        };
+        api.post('/subscriptions', {body}, (err, res) => {
+            if (err) return done(err);
+            api.post('/subscriptions', {body},(err, res) => {
+                if (err) return done(err);
+                expect(res.statusCode).to.equal(409);
+                expect(res.body.error).to.match(/already subscribed/i);
+                done();
+            });
+        });
+    });
+
 });
