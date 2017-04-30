@@ -1,92 +1,15 @@
 'use strict';
 
 const express = require('express');
-const bodyParser = require('body-parser');
 const error = require('http-errors');
-const uuid = require('uuid');
-const db = require('./lib/db');
-const friends = require('./lib/store/friends');
-const subscriptions = require('./lib/store/subscriptions');
-const blockList = require('./lib/store/block-list');
+const bodyParser = require('body-parser');
+const routes =  require('./lib/routes');
 
 const app = module.exports = express();
 
 app.use(bodyParser.json());
 
-app.post('/friends', (req, res, next) => {
-    const emails = req.body.friends;
-
-    if (!emails) {
-        return next(error.BadRequest('Missing friends data'));
-    }
-    if (emails.length != 2) {
-        return next(error.BadRequest('Exactly two emails are required'));
-    }
-
-    friends.connect(emails)
-        .then(() => res.status(200).json({success: true}))
-        .catch(err => next(err));
-});
-
-app.post('/friends/list', (req, res, next) => {
-    const email = req.body.email;
-
-    friends.list(email)
-        .then(friends => {
-            res.status(200).json({
-                success: true,
-                friends: friends.map(f => f.email),
-                count: friends.length
-            });
-        })
-        .catch(err => next(err));
-});
-
-app.post('/friends/common', (req, res, next) => {
-    const emails = req.body.friends;
-
-    friends.findCommon(emails)
-        .then(friends => {
-            res.status(200).json({
-                success: true,
-                friends: friends.map(f => f.email),
-                count: friends.length
-            });
-        })
-        .catch(err => next(err));
-});
-
-app.post('/subscriptions', (req, res, next) => {
-    const requestor = req.body.requestor;
-    const target = req.body.target;
-
-    if (!req.body.target) {
-        return next(error.BadRequest('Target parameter is missing'));
-    }
-    if (!req.body.requestor) {
-        return next(error.BadRequest('Requestor parameter is missing'));
-    }
-
-    subscriptions.subscribe(requestor, target)
-        .then(() => res.status(200).json({success: true}))
-        .catch(err => next(err));
-});
-
-app.post('/block', (req, res, next) => {
-    const requestor = req.body.requestor;
-    const target = req.body.target;
-
-    if (!req.body.target) {
-        return next(error.BadRequest('Target parameter is missing'));
-    }
-    if (!req.body.requestor) {
-        return next(error.BadRequest('Requestor parameter is missing'));
-    }
-
-    blockList.add(requestor, target)
-        .then(() => res.status(200).json({success: true}))
-        .catch(err => next(err));
-});
+app.use(routes);
 
 // 404 handler. We want a JSON response, so override express' default which renders HTML.
 app.use((req, res, next) => {
