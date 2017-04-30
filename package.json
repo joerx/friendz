@@ -5,10 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha spec/*-spec.js",
-    "server": "node ./server.js"
+    "server": "node ./server.js",
+    "start": "node server.js"
   },
   "author": "Joerg Henning <joerg@yodo.io>",
-  "license": "ISC",
+  "license": "BSD-2-Clause",
   "dependencies": {
     "body-parser": "^1.17.1",
     "express": "^4.15.2",
@@ -17,5 +18,13 @@
   "devDependencies": {
     "mocha": "^3.3.0",
     "request": "^2.81.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joerx/friendz.git"
+  },
+  "bugs": {
+    "url": "https://github.com/joerx/friendz/issues"
+  },
+  "homepage": "https://github.com/joerx/friendz#readme"
 }
