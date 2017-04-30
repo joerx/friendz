@@ -7,6 +7,7 @@ const uuid = require('uuid');
 const db = require('./lib/db');
 const friends = require('./lib/store/friends');
 const subscriptions = require('./lib/store/subscriptions');
+const blockList = require('./lib/store/block-list');
 
 const app = module.exports = express();
 
@@ -71,6 +72,21 @@ app.post('/subscriptions', (req, res, next) => {
         .catch(err => next(err));
 });
 
+app.post('/block', (req, res, next) => {
+    const requestor = req.body.requestor;
+    const target = req.body.target;
+
+    if (!req.body.target) {
+        return next(error.BadRequest('Target parameter is missing'));
+    }
+    if (!req.body.requestor) {
+        return next(error.BadRequest('Requestor parameter is missing'));
+    }
+
+    blockList.add(requestor, target)
+        .then(() => res.status(200).json({success: true}))
+        .catch(err => next(err));
+});
 
 // 404 handler. We want a JSON response, so override express' default which renders HTML.
 app.use((req, res, next) => {
