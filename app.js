@@ -3,30 +3,27 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const error = require('http-errors');
-const knex = require('knex');
 const uuid = require('uuid');
-const config = require('./configure');
-
-const db = knex(config.knex);
+const db = require('./lib/db');
+const friends = require('./lib/store/friends.js');
 
 const app = module.exports = express();
 
 app.use(bodyParser.json());
 
 app.post('/friends', (req, res, next) => {
-    // insert users, make them be friends
-    const friends = req.body.friends;
+    const emails = req.body.friends;
 
-    Promise
-        .all(friends.map(f => 
-            db('friends').insert({id: uuid(), email: f})
-        ))
-        .then(result => {
-            res.status(200).json({success: true});
-        })
-        .catch(err => {
-            next(err);
-        });
+    if (!emails) {
+        return next(error.BadRequest('Missing friends data'));
+    }
+    if (emails.length != 2) {
+        return next(error.BadRequest('Exactly two emails are required'));
+    }
+
+    friends.connect(emails)
+        .then(() => res.status(200).json({success: true}))
+        .catch(err => next(err));
 });
 
 // 404 handler. We want a JSON response, so override express' default which renders HTML.

@@ -8,6 +8,7 @@ assert(process.env.PG_URL, 'PG_URL must be set');
 module.exports = {
     knex: {
         client: 'postgres',
-        connection: process.env.PG_URL
+        connection: process.env.PG_URL,
+        // debug: true
     }
 };

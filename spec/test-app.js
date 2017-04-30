@@ -2,7 +2,8 @@
 
 const request = require('request');
 const knex = require('knex');
-const config = require('../configure');
+const http = require('http');
+const db = require('../lib/db');
 
 // drop all tables so we have a clean db
 const cleanup = (db) => {
@@ -16,10 +17,10 @@ const cleanup = (db) => {
 // instance of `request` module defaulting to the test apps url/port.
 const testApp = module.exports = (app) => {
 
+    let server = null;
+
     // random number between 10000-65000. could lead to port collision, but unlikely
     const port = 10000 + (Math.floor(Math.random()*55000));
-    const db = knex(config.knex);
-
     const agent = request.defaults({
         baseUrl: 'http://localhost:'+port,
         json: true
@@ -28,7 +29,15 @@ const testApp = module.exports = (app) => {
     // extend the defaulted request object with a start method to use in `before` hooks, etc.
     return Object.assign(agent, {
         start: done => {
-            cleanup(db).then(() => app.listen(port, done)).catch(done);
+            cleanup(db.instance())
+                .then(() => {
+                    server = app.listen(port, done)
+                })
+                .catch(done);
+        },
+        stop: () => {
+            db.disconnect();
+            if (server) server.close();
         }
     });
 }
