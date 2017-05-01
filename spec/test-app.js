@@ -1,11 +1,25 @@
 'use strict';
 
+/**
+ * Code in this file is to Prepare the app for API-testing by doing mostly two things:
+ * 
+ * - Clean up all database tables
+ * - Start a new instance of the app listening on a random port
+ *
+ * Provides a pre-defaulted instance of 'request' with the baseUrl already set to the port 
+ * the test app is using.
+ *
+ * Note that the app needs to be started and stopped before/after each test to clean up the db,
+ * free database connections and port bindings.
+ */
+
 const request = require('request');
 const knex = require('knex');
 const http = require('http');
 const db = require('../lib/db');
 
-// drop all tables so we have a clean db
+// Empty all tables so we have a clean db. List of tables is hardcoded here, improvement would be
+// to read it from the database. Don't drop the DB so we don't need to run migrations each time. 
 const cleanup = (conn) => {
     const tables = ['friends', 'friendships', 'blocklist', 'subscriptions'];
     return Promise.all(tables.map(

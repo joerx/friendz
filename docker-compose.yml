@@ -1,5 +1,8 @@
 version: '3'
 
+# Docker stack is pretty straightforward: homegrown container for the app itself and a generic 
+# postgres container for the database.
+
 services:
   app:
     build: ./
@@ -15,7 +18,7 @@ services:
     links:
       - postgres
     depends_on:
-      - postgres
+      - postgres # ensure postgres is started first
     command: run server
   postgres:
     image: postgres:9.6-alpine
